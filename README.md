@@ -143,7 +143,7 @@ Creating service api_server_standalone
 ```
 
 
-### 3. Label on node
+### 3. Control Container
 1. Labeling on each node
 ```
 docker node update --label-add dmz=true node2
@@ -183,6 +183,25 @@ deploy:
       spread: node.labels.azone
 ```
 
+
+### 4. Docker Swarm Routing Mesh(Ingress network)
+1. Check port open
+- Port 7946 TCP/UDP for container network discovery.
+- Port 4789 UDP for the container ingress network.
+
+```
+# netstat -tnl
+# netstat -unl
+# firewall-cmd --zone=public --list-all
+```
+
+```
+# firewall-cmd --zone=public --permanent --add-port=7946/tcp
+# firewall-cmd --zone=public --permanent --add-port=7946/udp
+# firewall-cmd --zone=public --permanent --add-port=4789/udp
+# firewall-cmd --reload
+# firewall-cmd --zone=public --list-all
+```
 
 참조 블로그
 <https://subicura.com/2017/02/25/container-orchestration-with-docker-swarm.html>
