@@ -143,13 +143,45 @@ Creating service api_server_standalone
 ```
 
 
+### 3. Label on node
+1. Labeling on each node
+```
+docker node update --label-add dmz=true node2
+docker service create --name dmz-nginx --constraint node.labels.dmz==true --replicas 2 nginx
+```
+> on compose file
+```
+deploy:
+  placement:
+    constraints:
+        - node.labels.disk == ssd
+```
+> remove the service and labels we created
+```
+docker node update --label-rm dmz node2
 
-
-
-
-
-
-
+```
+2. Global
+> Global: Place one task on each node in Swarm
+```
+docker service create --mode=global nginx
+```
+> Place one task on each Worker in Swarm
+```
+docker service create --mode=global --constrant=node.role==worker nginx
+```
+> compose file
+```
+deploy:
+  mode: global
+```
+3. preferences
+```
+deploy:
+  placement:
+    preferences:
+      spread: node.labels.azone
+```
 
 
 참조 블로그

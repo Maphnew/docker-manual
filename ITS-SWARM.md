@@ -89,7 +89,12 @@ Node left the swarm.
 ```
 
 ### 2. Stack / Service 실행
+- git clone API_Server
 
+0. Compose up > create image 
+```
+docker-compose up -d
+```
 1. Test - MariaDB
 ```
 [root@bookserver mariadb-docker]# docker stack deploy -c docker-compose.yml mariadb1
