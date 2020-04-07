@@ -140,7 +140,7 @@ $ docker run -d \
  --privileged \
  --name docker-registry \
  -e REGISTRY_STORAGE_DELETE_ENABLED=true \
- -v /home/its/data/docker:/var/lib/registry \
+ -v /home/its/data:/var/lib/registry \
  registry:2
 
 # hello-world 이미지가 없으니 docker hub에서 pull하자.
