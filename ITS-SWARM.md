@@ -126,11 +126,22 @@ Creating service api_server_standalone
 <참조: https://novemberde.github.io/2017/04/09/Docker_Registry_0.html>
 
 ```
-# registry 이미지를 가져오기
+# VOLUME 권한을 위한 명령어
+chmod a+rw /var/run/docker.sock 
+chmod 777 /home/its/data/docker (저장위치)
+
+# registry 이미지를 가져오기 (안해도 상관 없음)
 $ docker pull registry
 
 # registry를 실행하기
-$ docker run -dit --name docker-registry -p 5000:5000 registry
+$ docker run -d \
+ -p 5000:5000 \
+ --restart=always \
+ --privileged \
+ --name docker-registry \
+ -e REGISTRY_STORAGE_DELETE_ENABLED=true \
+ -v /home/its/data/docker:/var/lib/registry \
+ registry:2
 
 # hello-world 이미지가 없으니 docker hub에서 pull하자.
 $ docker pull hello-world
