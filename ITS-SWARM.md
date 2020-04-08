@@ -476,3 +476,56 @@ docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v porta
 -- for gitlab server --
 docker run -d -p 9009:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data --restart=always portainer/portainer
 ```
+
+### 7. Registry UI 설치
+- https://waspro.tistory.com/532
+
+1. Dockerfile 작성
+```
+[root@ITS-WEBSERVER docker-registry-web]# cat config.yaml
+registry:
+    # 기존에 설치한 docker private registry
+    url: http://192.168.101.70:5000/v2
+    # Docker registry name
+    name: 192.168.101.70:5000
+    # docker 권한 부여
+    readonly: false
+    auth:
+    enabled: false
+[root@ITS-WEBSERVER docker-registry-web]#
+```
+2. docker-registry-web 실행
+
+```
+[root@ITS-WEBSERVER docker-registry-web]# docker run -it -d -p 8080:8080 --name registry-web -v /home/its/docker-registry-web/config.yaml:/conf/config.yml:ro hyper/docker-registry-web        
+                    Unable to find image 'hyper/docker-registry-web:latest' locally
+Trying to pull repository docker.io/hyper/docker-registry-web ...
+latest: Pulling from docker.io/hyper/docker-registry-web
+04c996abc244: Pull complete
+d394d3da86fe: Pull complete
+bac77aae22d4: Pull complete
+b48b86b78e97: Pull complete
+09b3dd842bf5: Pull complete
+69f4c5394729: Pull complete
+b012980650e9: Pull complete
+7c7921c6fda1: Pull complete
+e20331c175ea: Pull complete
+40d5e82892a5: Pull complete
+a414fa9c865a: Pull complete
+0304ae3409f3: Pull complete
+13effc1a664f: Pull complete
+e5628d0e6f8c: Pull complete
+0b0e130a3a52: Pull complete
+d0c73ab65cd2: Pull complete
+240c0b145309: Pull complete
+f1fd6f874e5e: Pull complete
+40b5e021928e: Pull complete
+88a8c7267fbc: Pull complete
+f9371a03010e: Pull complete
+Digest: sha256:723ffa29aed2c51417d8bd32ac93a1cd0e7ef857a0099c1e1d7593c09f7910ae
+Status: Downloaded newer image for docker.io/hyper/docker-registry-web:latest
+79a564384a12020a94ce09a84497c82245706f8abb3622554b43b474d2706f71
+
+```
+3. 접속
+- http://192.168.101.80:8080/
