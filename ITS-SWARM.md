@@ -2,8 +2,8 @@
 
 1. Swarm node 구성 계획
 2. Swarm 구성하기
-3. Stack / Service 실행
-4. Docker private registry 구축하기
+3. Docker private registry 구축하기
+4. Stack / Service 실행
 5. Deploy를 위한 Compose file 작성하기
 
 ### 1. Swarm node 구성 계획
@@ -57,6 +57,8 @@ $ sudo reboot
 <https://subicura.com/2017/02/25/container-orchestration-with-docker-swarm.html>
 
 ### 2. Swarm 구성하기
+> docker, docker-compose 설치 필수
+- centos에 docker 설치 https://docs.docker.com/engine/install/centos/
 > Swarm init (Swarm 구축): manager node에서 실행
 ```
 - input
@@ -144,41 +146,13 @@ Node left the swarm.
 [root@ITS-WEBSERVER its]# docker node rm node-2
 ```
 
-### 3. Stack / Service 실행
-> Source download
-- git clone API_Server
-
-1. Compose up 명령어를 통해 image 생성하기 
+### 3. Docker private registry 구축하기
+> Docker registry를 위한 port 방화벽 설정
 ```
-[root@ITS-WEBSERVER its]# docker-compose up -d
+# firewall-cmd --zone=public --permanent --add-port=5000/tdp
+# firewall-cmd --reload
+# firewall-cmd --zone=public --list-all
 ```
-2. Deploy API Server 
-- Nginx
-- Gateway (bm4server)
-- StandAlone (bm3server)
-```
-- input
-[root@bookserver API_Server]# docker stack deploy --compose-file docker-compose.yml api_server
-```
-```
-- output
-Ignoring unsupported options: build, restart
-
-Ignoring deprecated options:
-
-container_name: Setting the container name is not supported.
-
-Creating network api_server_backend
-Creating service api_server_nginx
-Creating service api_server_gateway
-Creating service api_server_standalone
-```
-- Test -Stack deploy MariaDB
-```
-[root@bookserver mariadb-docker]# docker stack deploy -c docker-compose.yml mariadb1
-Creating service mariadb1_mariadb
-```
-### 4. Docker private registry 구축하기
 > "No such image: ~" 와 같은 Error 발생하는 것을 해결하기 위한 private registry 생성
 1. Docker registry 설치   
 <참조: https://novemberde.github.io/2017/04/09/Docker_Registry_0.html>
@@ -330,6 +304,42 @@ $ docker exec -it docker-registry registry garbage-collect /etc/docker/registry/
 
 출처: https://trylhc.tistory.com/entry/Docker-registry-삭제-2 [오늘처럼..?]
 ```
+
+### 4. Stack / Service 실행
+> Source download
+- git clone API_Server
+
+1. Compose up 명령어를 통해 image 생성하기 
+```
+[root@ITS-WEBSERVER its]# docker-compose up -d
+```
+2. Deploy API Server 
+- Nginx
+- Gateway (bm4server)
+- StandAlone (bm3server)
+```
+- input
+[root@bookserver API_Server]# docker stack deploy --compose-file docker-compose.yml api_server
+```
+```
+- output
+Ignoring unsupported options: build, restart
+
+Ignoring deprecated options:
+
+container_name: Setting the container name is not supported.
+
+Creating network api_server_backend
+Creating service api_server_nginx
+Creating service api_server_gateway
+Creating service api_server_standalone
+```
+- Test -Stack deploy MariaDB
+```
+[root@bookserver mariadb-docker]# docker stack deploy -c docker-compose.yml mariadb1
+Creating service mariadb1_mariadb
+```
+
 
 ### 5. Deploy를 위한 Compose file 작성하기
 1. api server yml파일 비교
