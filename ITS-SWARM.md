@@ -5,6 +5,7 @@
 3. Docker private registry 구축하기
 4. Stack / Service 실행
 5. Deploy를 위한 Compose file 작성하기
+6. Portainer 설치하기
 
 ### 1. Swarm node 구성 계획
 
@@ -462,4 +463,16 @@ networks:
   backend:
   frontend:
 
+```
+
+### 6. Portainer 설치하기
+
+- ref: https://help.iwinv.kr/manual/read.html?idx=548
+```
+docker volume create portainer_data
+
+docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data --restart=always portainer/portainer
+
+-- for gitlab server --
+docker run -d -p 9009:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data --restart=always portainer/portainer
 ```
