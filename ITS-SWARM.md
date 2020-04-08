@@ -310,11 +310,40 @@ $ docker exec -it docker-registry registry garbage-collect /etc/docker/registry/
 > Source download
 - git clone API_Server
 
-1. Compose up 명령어를 통해 image 생성하기 
+1. Compose build 명령어를 통해 image 생성하기 
 ```
-[root@ITS-WEBSERVER its]# docker-compose up -d
+[root@ITS-WEBSERVER its]# docker-compose build
 ```
-2. Deploy API Server 
+
+2. Tagging and Pushing
+- tag
+```
+[root@bookserver API_Server]# docker tag api_server_gateway 192.168.101.70:5000/api_server_gateway
+[root@bookserver API_Server]# docker tag api_server_standalone 192.168.101.70:5000/api_server_standalone
+[root@bookserver API_Server]# docker tag api_server_nginx2 192.168.101.70:5000/api_server_nginx2
+[root@bookserver API_Server]# docker tag app_server_mobile 192.168.101.70:5000/app_server_mobile
+[root@bookserver API_Server]# docker tag app_server_nginx1 192.168.101.70:5000/app_server_nginx1
+[root@bookserver API_Server]# docker tag app_server_indexing 192.168.101.70:5000/app_server_indexing
+[root@bookserver API_Server]# docker tag app_server_set 192.168.101.70:5000/app_server_set
+[root@bookserver API_Server]# docker tag app_server_web 192.168.101.70:5000/app_server_web
+```
+- push
+```
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/api_server_gateway
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/api_server_standalone
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/api_server_nginx2
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_mobile
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_nginx1
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_indexing
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_set
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_web
+```
+- image 유무 확인
+```
+[root@bookserver API_Server]# curl -X GET http://192.168.101.70:5000/v2/_catalog
+{"repositories":["api_server_gateway","api_server_nginx_swarm","api_server_standalone","app_server_indexing","app_server_mobile","app_server_nginx_swarm","app_server_set","app_server_web"]}
+```
+3. Deploy API Server 
 - Nginx
 - Gateway (bm4server)
 - StandAlone (bm3server)
