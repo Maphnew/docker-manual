@@ -213,7 +213,7 @@ $ curl -X GET http://localhost:5000/v2/hello-world/tags/list
 <참조: https://waspro.tistory.com/532>
 
 > "server gave HTTP response to HTTPS client" 라는 메시지가 출력되는 경우 다음과 같이 daemon.json 파일을 수정("insecure-registries": ["192.168.101.70:5000"])   
-> "experimental":true 추가
+> "docker deploy return only supported with experimental daemon" 라는 에러는 "experimental":true 추가 
 
 ```
 $ vi /etc/docker/daemon.json 
