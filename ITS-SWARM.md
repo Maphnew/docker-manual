@@ -6,6 +6,8 @@
 4. Stack / Service 실행
 5. Deploy를 위한 Compose file 작성하기
 6. Portainer 설치하기
+7. Registry UI 설치
+8. nginx 마지막에 실행하기
 
 ### 1. Swarm node 구성 계획
 
@@ -560,3 +562,66 @@ Status: Downloaded newer image for docker.io/hyper/docker-registry-web:latest
 ```
 3. 접속
 - http://192.168.101.80:8080/
+
+
+### 8. nginx 마지막에 실행하기
+- 참조 https://github.com/vishnubob/wait-for-it
+
+#### 1. Dockerfile 수정하기
+
+1. API Server
+
+```dockerfile
+# nginx Dockfile
+
+FROM nginx:1.17.8
+
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY wait-for-it.sh /wait-for-it.sh
+
+RUN chmod +x /wait-for-it.sh
+
+CMD ["/wait-for-it.sh", "192.168.101.80:9210", "192.168.101.80:9211", "--", "nginx", "-g", "daemon off;"]
+```
+
+2. APP Server
+
+```dockerfile
+# nginx Dcokerfile
+
+FROM nginx:1.17.8
+
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY wait-for-it.sh /wait-for-it.sh
+
+RUN chmod +x /wait-for-it.sh
+
+CMD ["/wait-for-it.sh", "192.168.101.80:9810", "192.168.101.80:9811", "192.168.101.80:9812", "192.168.101.80:9813", "--", "nginx", "-g", "daemon off;"]
+```
+
+#### 2. Docker Build 하기
+
+1. API Server
+```
+[root@bookserver API_Server]# docker-compose build
+```
+
+2. APP Server
+```
+[root@bookserver APP_Server]# docker-compose build
+```
+
+#### 3. Docker Registry에 Push하기
+
+```
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/api_server_gateway
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/api_server_standalone
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/api_server_nginx_swarm
+```
+```
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_mobile
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_nginx_swarm
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_indexing
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_set
+[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_web
+```
