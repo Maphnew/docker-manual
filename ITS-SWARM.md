@@ -581,7 +581,7 @@ COPY wait-for-it.sh /wait-for-it.sh
 
 RUN chmod +x /wait-for-it.sh
 
-CMD ["/wait-for-it.sh", "192.168.101.80:9210", "192.168.101.80:9211", "--", "nginx", "-g", "daemon off;"]
+CMD ["/wait-for-it.sh", "-t", "1", "192.168.101.30:9210", "--", "/wait-for-it.sh", "-t", "1", "192.168.101.30:9211", "--strict", "--", "nginx", "-g", "daemon off;"]
 ```
 
 2. APP Server
@@ -596,7 +596,7 @@ COPY wait-for-it.sh /wait-for-it.sh
 
 RUN chmod +x /wait-for-it.sh
 
-CMD ["/wait-for-it.sh", "192.168.101.80:9810", "192.168.101.80:9811", "192.168.101.80:9812", "192.168.101.80:9813", "--", "nginx", "-g", "daemon off;"]
+CMD ["/wait-for-it.sh", "-t", "1", "192.168.101.80:9810", "--", "/wait-for-it.sh", "-t", "1", "192.168.101.80:9811", "--", "/wait-for-it.sh", "-t", "1", "192.168.101.80:9812", "--", "/wait-for-it.sh", "-t", "1", "192.168.101.80:9813", "--", "nginx", "-g", "daemon off;"]
 ```
 
 #### 2. Docker Build 하기
@@ -619,9 +619,9 @@ CMD ["/wait-for-it.sh", "192.168.101.80:9810", "192.168.101.80:9811", "192.168.1
 [root@bookserver API_Server]# docker push 192.168.101.70:5000/api_server_nginx_swarm
 ```
 ```
-[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_mobile
-[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_nginx_swarm
-[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_indexing
-[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_set
-[root@bookserver API_Server]# docker push 192.168.101.70:5000/app_server_web
+[root@bookserver APP_Server]# docker push 192.168.101.70:5000/app_server_mobile
+[root@bookserver APP_Server]# docker push 192.168.101.70:5000/app_server_nginx_swarm
+[root@bookserver APP_Server]# docker push 192.168.101.70:5000/app_server_indexing
+[root@bookserver APP_Server]# docker push 192.168.101.70:5000/app_server_set
+[root@bookserver APP_Server]# docker push 192.168.101.70:5000/app_server_web
 ```
